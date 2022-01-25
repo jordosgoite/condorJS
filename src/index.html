@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Condor Agency Tasks</title>
+        <script src="js/main.js" defer></script>
+        <link rel="stylesheet" href="css/styles.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="pending-section">
+                <div id="pending-header" class="header">
+                    <h2 style="margin:5px">Pendiente</h2>
+                </div>
+                <ul id="tasks-list"></ul>
+                <div class="add-task" id="add-task" style="display: block;">
+                    <span id="span-add-task" onclick="addTaskForm(this.id)" class="addBtn">+</span>
+                </div>
+                <div class="task-form" id ="task-form" style="display: none;">
+                    <input type="text" id="task-name" placeholder="  Task name..." style="width: 60%;min-height: 38px;">
+                    <span id="span-add-pending" onclick="addNewTask(this.id)" class="addBtn" style="width: 20%;">Add</span>
+                    <span id="cancel-add" onclick="addTaskForm(this.id)" class="addBtn" style="width: 20%;">Cancel</span>
+                </div>  
+            </div>
+            <div class="completed-section">
+                <div id="completed-header" class="header">
+                    <h2 style="margin:5px">Completado</h2>
+                </div>
+                <ul id="completed-list">
+                </ul>
+                <div class="add-task" id="add-completed" style="display: block;">
+                    <span id="span-add-completed" onclick="addTaskForm(this.id)" class="addBtn">+</span>
+                </div>
+                <div class="task-form" id="completed-form" style="display: none;">
+                    <input type="text" id="task-completed" placeholder="  Task name..." style="width: 60%;min-height: 38px;">
+                    <span id="span-add-completed" onclick="addNewTask(this.id)" class="addBtn" style="width: 20%;">Add</span>
+                    <span id="cancel-completed" onclick="addTaskForm(this.id)" class="addBtn" style="width: 20%;">Cancel</span>
+                </div>  
+            </div>
+        </div>
+    </body>
+</html>
