@@ -11,6 +11,8 @@
             <div class="pending-section">
                 <div id="pending-header" class="header">
                     <h2 style="margin:5px">Pendiente</h2>
+                    <input type="text" onchange="searchInStorage(this.className, this.value)" id ="pending-search" class="pending-search"/>
+                    <img src="./img/search.png" class="pending-search" style="max-width: 20px; cursor: pointer;" onclick="iconSearchTask(this.className)"/>
                 </div>
                 <ul id="tasks-list"></ul>
                 <div class="add-task" id="add-task" style="display: block;">
@@ -25,6 +27,8 @@
             <div class="completed-section">
                 <div id="completed-header" class="header">
                     <h2 style="margin:5px">Completado</h2>
+                    <input type="text" onchange="searchInStorage(this.className, this.value)" id ="completed-search" class="completed-search"/>
+                    <img src="./img/search.png" class="completed-search" style="max-width: 20px; cursor: pointer;" onclick="iconSearchTask(this.className)"/>
                 </div>
                 <ul id="completed-list">
                 </ul>

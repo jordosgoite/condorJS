@@ -83,12 +83,10 @@ const addCompletedTask = (taskID) => {
 }
 
 const close = document.getElementsByClassName("close");
-for (let i = 0; i < close.length; i++) {
-    close[i].onclick = function() {
-        const div = this.parentElement;
-        div.remove();
-    }
-}
+const edit = document.getElementsByClassName("edit");
+const closeEditing = document.getElementsByClassName("closeEditing");
+const submitEditing = document.getElementsByClassName("submitEditing");
+
 
 // Clean localStorage when refresh
 window.onload = window.localStorage.clear();
@@ -111,12 +109,18 @@ const cleanLocalStorageValue = (value, type) =>{
 
 // Function to add completed task to the completed tasks list
 const localStorageSetHandler = function(e) {
-    let listIdentifier = e.key == "completedTasks"? "completed-list" : "tasks-list";
+    let listIdentifier;
+    if (e.key == "completedTasks") listIdentifier = "completed-list";
+    if (e.key == "pendingTasks") listIdentifier = "tasks-list";
+    if (e.key == "tasks-list" || e.key == "completed-list" ) listIdentifier = e.key;
+    if (e.key == "completedTasks" || e.key == "pendingTasks") {
+        document.querySelectorAll(".pending-search, .completed-search").forEach(item => item.value="")
+    }
     document.getElementById(listIdentifier).innerHTML = "";
     const completedList = JSON.parse(e.value);
-    completedList.map((item) => {
+    completedList && completedList.map((item) => {
         const li = document.createElement("li");
-        if(e.key == "pendingTasks"){
+        if(e.key == "pendingTasks" || e.key=="tasks-list"){
             const checkbox = document.createElement("input");
             checkbox.setAttribute("type", "checkbox");
             checkbox.className = "task-status";
@@ -129,12 +133,12 @@ const localStorageSetHandler = function(e) {
         counter++;
         const taskTxt = document.createElement("p");
         const newTask = document.createTextNode(item);
-        taskTxt.id = `list-item-completed-${counter}`;
         taskTxt.appendChild(newTask);
         li.appendChild(taskTxt);
-        if (e.key=="pendingTasks") {
+        if (e.key=="pendingTasks" || e.key=="tasks-list") {
             const editIcon = document.createElement("img");
             editIcon.src="img/edit.png";
+            editIcon.className="edit";
             editIcon.style.maxWidth = "20px";
             li.appendChild(editIcon);
         }
@@ -146,19 +150,60 @@ const localStorageSetHandler = function(e) {
         document.getElementById(listIdentifier).appendChild(li);
         for (let i = 0; i < close.length; i++) {
             close[i].onclick = function() {
-                console.log("here")
                 const div = this.parentElement;
                 div.remove();
                 let taskName;
-                console.log(taskName)
-                if (e.key == "completedTasks"){
+                if (e.key == "completedTasks" || e.key=="completed-list"){
                     taskName = this.previousElementSibling.textContent;
                     pendingTaskStorage(taskName, "pendingTasks");
                     cleanLocalStorageValue(taskName, "completedTasks");
                 }
-                if (e.key == "pendingTasks"){
+                if (e.key == "pendingTasks" || e.key=="tasks-list"){
                     taskName = this.previousElementSibling.previousElementSibling.textContent;
                     cleanLocalStorageValue(taskName, "pendingTasks");
+                }
+            }
+        }
+        for (let i = 0; i < edit.length; i++) {
+            edit[i].onclick = function() {
+                const parent = this.parentElement;
+                const children = parent.children;
+                arrayOfChildren = Array.from(children);
+                console.log(arrayOfChildren)
+                editTaskName = this.previousElementSibling.textContent;
+                const editContainer = document.createElement("div");
+                editContainer.style.display = "flex";
+                editContainer.style.width = "100%";
+                editContainer.style.justifyContent = "space-around";
+                const editInput = document.createElement("input");
+                editInput.value = editTaskName;
+                editInput.setAttribute("type", "text");
+                const editImg = document.createElement("img");
+                editImg.src="img/checked.png";
+                editImg.style.maxWidth = "20px";
+                editImg.style.paddingTop = "10px";
+                editImg.style.paddingBottom = "10px";
+                editImg.className="submitEditing";
+                const cancelEditImg = document.createElement("img");
+                cancelEditImg.src="img/cancel.png";
+                cancelEditImg.style.maxWidth = "18px";
+                cancelEditImg.style.paddingTop = "10px";
+                cancelEditImg.style.paddingBottom = "10px";
+                cancelEditImg.className="closeEditing";
+                editContainer.appendChild(editInput);
+                editContainer.appendChild(editImg);
+                editContainer.appendChild(cancelEditImg);
+                parent.replaceChildren(editContainer);
+                for (let i = 0; i < closeEditing.length; i++) {
+                    closeEditing[i].onclick = function() {
+                        this.parentElement.parentElement.replaceChildren(...arrayOfChildren);
+                    }
+                }
+                for (let i = 0; i < submitEditing.length; i++) {
+                    submitEditing[i].onclick = function() {
+                        const editedTaskName = this.previousElementSibling.value;
+                        console.log(editedTaskName)
+                    }
                 }
             }
         }
@@ -167,3 +212,20 @@ const localStorageSetHandler = function(e) {
 
 // Event listener to listen localStorage changes
 document.addEventListener("itemInserted", localStorageSetHandler, false);
+
+// Get search values when click on search icon
+const iconSearchTask = (searchId) => {
+    const input = document.getElementById(searchId)
+    inputSearchValue = input.value;
+    searchInStorage(searchId, inputSearchValue);
+}
+
+// Search funcionality
+const searchInStorage = (searchId, inputSearchValue) => {
+    const identifier = searchId == "pending-search"? "pendingTasks" : "completedTasks";
+    const searchSection = searchId == "pending-search"? "tasks-list" : "completed-list";
+    const storageList = localStorage.getItem(identifier);
+    const tasksList = JSON.parse(storageList);
+    const filteredList = tasksList && tasksList.filter((item)=> item.toLowerCase().includes(inputSearchValue.toLowerCase()));
+    localStorage.setItem(searchSection, JSON.stringify(filteredList));
+}
