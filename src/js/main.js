@@ -168,9 +168,9 @@ const localStorageSetHandler = function(e) {
             edit[i].onclick = function() {
                 const parent = this.parentElement;
                 const children = parent.children;
-                arrayOfChildren = Array.from(children);
+                const arrayOfChildren = Array.from(children);
                 console.log(arrayOfChildren)
-                editTaskName = this.previousElementSibling.textContent;
+                const editTaskName = this.previousElementSibling.textContent;
                 const editContainer = document.createElement("div");
                 editContainer.style.display = "flex";
                 editContainer.style.width = "100%";
@@ -202,7 +202,7 @@ const localStorageSetHandler = function(e) {
                 for (let i = 0; i < submitEditing.length; i++) {
                     submitEditing[i].onclick = function() {
                         const editedTaskName = this.previousElementSibling.value;
-                        console.log(editedTaskName)
+                        updateTask(editTaskName, editedTaskName);
                     }
                 }
             }
@@ -228,4 +228,13 @@ const searchInStorage = (searchId, inputSearchValue) => {
     const tasksList = JSON.parse(storageList);
     const filteredList = tasksList && tasksList.filter((item)=> item.toLowerCase().includes(inputSearchValue.toLowerCase()));
     localStorage.setItem(searchSection, JSON.stringify(filteredList));
+}
+
+// Update task name 
+const updateTask = (oldValue, newValue) => {
+    const pendingTasks = localStorage.getItem("pendingTasks");
+    const pendingTasksList = JSON.parse(pendingTasks);
+    const oldTaskIndex = pendingTasksList.indexOf(oldValue);
+    pendingTasksList[oldTaskIndex] = newValue;
+    localStorage.setItem("pendingTasks", JSON.stringify(pendingTasksList));
 }
