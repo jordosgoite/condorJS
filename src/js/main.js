@@ -164,12 +164,13 @@ const localStorageSetHandler = function(e) {
                 }
             }
         }
+        let isEditing = false;
         for (let i = 0; i < edit.length; i++) {
             edit[i].onclick = function() {
-                const parent = this.parentElement;
+                if (!isEditing) {
+                    const parent = this.parentElement;
                 const children = parent.children;
-                const arrayOfChildren = Array.from(children);
-                console.log(arrayOfChildren)
+                let arrayOfChildren = Array.from(children);
                 const editTaskName = this.previousElementSibling.textContent;
                 const editContainer = document.createElement("div");
                 editContainer.style.display = "flex";
@@ -194,16 +195,20 @@ const localStorageSetHandler = function(e) {
                 editContainer.appendChild(editImg);
                 editContainer.appendChild(cancelEditImg);
                 parent.replaceChildren(editContainer);
+                isEditing = true;
                 for (let i = 0; i < closeEditing.length; i++) {
                     closeEditing[i].onclick = function() {
                         this.parentElement.parentElement.replaceChildren(...arrayOfChildren);
+                        isEditing=false;
                     }
                 }
                 for (let i = 0; i < submitEditing.length; i++) {
                     submitEditing[i].onclick = function() {
                         const editedTaskName = this.previousElementSibling.value;
                         updateTask(editTaskName, editedTaskName);
+                        isEditing=false;
                     }
+                }
                 }
             }
         }
